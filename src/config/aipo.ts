@@ -1,0 +1,31 @@
+export default {
+  api: "https://aipo.myiqdii.com/Home/GetTurnoverChangeInfo",
+  params: {
+    stockType: 0,
+    type: 3,
+    pageIndex: 1,
+    pageSize: 100,
+    searchKey: "",
+  },
+  headers: {
+    accept: "application/json, text/javascript, */*; q=0.01",
+    "accept-language": "zh-CN,zh;q=0.9,en;q=0.8",
+    "cache-control": "no-cache",
+    pragma: "no-cache",
+    priority: "u=1, i",
+    requestverificationtoken:
+      "CfDJ8Fcry3hAaGJDgrjH_cUzB_Z-sgyyXqLwRRtT9JA_1I5uVsgSpRt6wMRUjWmnykXKP3zRDaU6MuqesIoZ8w6s5L1G7adMhxvSd30XMINfKUlHLB3ivw_qslsXbSNqyK5WZcuq1cpyMCupmUaZ7G8Mj5FRt3khLypphT7BdHWYn6EnHq5sqmylqx0Etsl3sYC5OQ",
+    "sec-ch-ua":
+      '"Google Chrome";v="129", "Not=A?Brand";v="8", "Chromium";v="129"',
+    "sec-ch-ua-mobile": "?0",
+    "sec-ch-ua-platform": '"macOS"',
+    "sec-fetch-dest": "empty",
+    "sec-fetch-mode": "cors",
+    "sec-fetch-site": "same-origin",
+    "x-requested-with": "XMLHttpRequest",
+    cookie:
+      "zh_choose=s; traderDataSite=CfDJ8Fcry3hAaGJDgrjH_cUzB_agUbllekG7iin_bR6nUjtrgMd-wHzS_Fxfnc_K9qrpRK_hBZODazG5kK4AMcbU0eNxkgnuP6Iz9NIMSN1O6sJbvq5cQRwy765zc_aLmIYl2rxlmJf8BN8BX_PuZMcHWTw; Hm_lvt_3a27674636bd41905f818ad38a581b99=1729051423; HMACCOUNT=D3A43C9F3B77C019; .AspNetCore.traderDataLogin=CfDJ8Fcry3hAaGJDgrjH_cUzB_bmSSJ0lxjIIZbRmQLe50gjqCQlw-Ojx_EMw9YUoUhxM9GXysccgapV2m77T9v__6rqbiwJ-38Janu60zI-q_Pqb-YHYiUCJh6zCGEAPe_g7nbhP_LtcuO6VheIU-pac9mL7qlG4eS2kbc8JumL7w4xgAbQRUW5DRKIlzbHZhS3n5ikeZmrK5Z4N02rTNTshylQHCZztdTtA6pwrqaZoMjHW6lIyr6e6_efcanIjncHBH0SAjasQCSSiuvDjdBvNcIHimIE7UJJm5xaBBhA_LF8b3IsJNuWh6RL-Epk73BKJ_OjSsHPBqPQPgYp6zN8RabH69JPZDcb_Tmu_Sifr6ZbZqClcnWotyI8ApIsXj4s-L-1zYwv0sS04dwFUMwDPLC5wlvz1tD819VJybGyjf7eEB6BldxKHhB7r0ot4UubPPmalJxr3JSyyr1OlEt4Cpve2roqfTHbjzTRmaNe9kgZ1wX0m3tP1pBEpgLqVrxBw5YHE0wk3HGy5mpjeo4RNPa04dIQ6VoeDmx08XLgTYIMS7rEZI__7q7fHFIrJRpSxYJKni7dqOwIEMrdmUkg9BmikuTM5CBY_1EI-5TnqODW_Ola8G5pE_ggUyZqZJ_baXbXiVu6nrIMRDTcUs8IgC9REWEEu-FT3sxRABwihZrf4DR10JU69UbB2DKdBN97YufknAmaxr0UaKaDK3D6h_GG8pQRyBU0RQF014M_1DJeuWqOzZbSDVF3TW-saztBcNLP926UaGWeBVjELHTR9blUUUTnQI0iIQp92znOkNiX89LnBczmEFshIdow-LwT9Sl1XA9CpynwwCZAyb2cIYyG1SODYd6L0y9waND63Mni9FOe7Y7Dh9baBb66gzs8PB6rQNrhZASpe6J3y-rKLPdKwOOmMXf2Oxc-CMiYyqu2CVCHD4gT7MuphhZ0evbkMrWkq-ar-W3JT9cr1pExnuJxCYasS8vNIeeJFYZmlM-doVggcBzXsIsCdx6_UuL6vNpIw1q9hrR4NQXdLfQjO1AtJpcvq4uhN-fSI6IJAx0Y4ATkDSEMCa4UlxwriRfM8g42HIPKiL-Hik3P-7GmohqweH9zGwC7MpAdDj5anLWtojdhMifHN0RN9gQPfvbYvcXCz9HrBa6KzDoicMG-ViiToeNgO9aPSXSaV2SlG015zilRNQrBb2Gpf55IJiP4xPtAog5kzFQiTMxwQGfto7RMj7gGnaXjDR4SkPA9J4ok3Hn2bnEGwW8N3BGSGHx0qMasu4ol8rzXNt7Pk1aqt5hUsWnRZHst6a5fTAOlPGBOGLWKH-8Xm38lYP89Xz-1GEBTk3utRpL4er3wVTf2Jt7WJTozPIzKzMHLHEa0Lwr_qAeLJDHgtgybU0nXODT9QVUnSkZBsGU6o9D55r3rf27pgkeP16HDuvfgPMU6RZXHWQhyhMgbTbVPBL2dSEAm3PhRTRFKGfaSVsE9WUeCL4-nSMq3lG3_D-LzJWQS6_jKvVDu7L-pWkbYld-caOv9ArwkUGhL5YP9rA9cg_q2tyskqWfu9-fpb_p2CFywONVXKlDD9mp3wTHyU2grlUc_X2-uVjAg7_JEUlHddpB1O6nFLK8dyu9cSTdsZLt-gwQ8d4u6j--MaWfZ4GbbGayOGj2x-lDQP3UaMAjClJnYKPZ5lRMDRUTLFfwv3YyoX4IHXrG6dGMf2upYTySC9drXelh2LovhjseD0sNMY0der7dd6ov3XmD0cQu4WdQXSXhMeqVsrD_-PIoU580H6Yf6X7Tsww2pKRuMkNN4t8w3oMkWvTAhrPcw9zCNl9p9_b_lV9WH5gZ9Z0XJ0TZx5DPhj9dcUnK4lI8HxMn1FagiVcF9Rakf1LDY0rxGQSgaOncFlNc2hrl0xg8Xu_PtFZVCm5qt_V5UmIoIwvKj25NXn24CVnwupOtUc1bWOxT45h7I0EpLfBMPvuKhq7oS2VX5Cd3j7J4U2Gn2raIo22-zKAo0NanH1PJhG8nd3YLvHXd7EdgNTXYT8Li6zIBQhorDwyGmqeQnjnsQTeaqzdwI5mUmH6Q6p7w9Z8EqadVdkhS8G9t2baURnJLSh2_RW4yYYrOCVx0yNWRHxtozM4lZuc05sXSkQx7Us-5p6JNfB41EebTR-z9maWqEi2xg_obqp-8ZeSKlSM6_P9Cl4UJXQwAY7pAwcS10ThTDbbLs-ffErRmDdMXeQD9CM3zYaPmScZLf3n9BQdfzLtkXFh75At-p6qXdEfOHF_VH8nBPIWmxsKFHMIhlytCD4bnimVeFTyAd4sjq-_WPC5em8j6T9zF_-fIOj9PuYr_8VDBp58FyY8vlR8OQH_tTOZS7xIWXm_9RuBKtiV_cR8scXSRwQVv-hT913klqxmkGVjJ_QWEwDFilIaKFqye2DJhAjzrXlMckhk0D3wBNXMqHHAPYjytLx6u6guxFmU0XMiaRUKTqoOT9sdSAznBlye-rtbgW9J5CxO8nBC4bousE_GwP6kDz-SUviBQo7BNyfIFdkS8gTGkbXAd23k8shm1it3F4-ni5RRN25Kv8nqOpzn7ezesDXcObmLcrmtI_nrtsJJkSB_2-nRQWYlXnUmIDrhdYPsDIVupU3ei_kzEqSOiEvmhH0phndoEAxaZKLnSzGwzQx_uFoP2j9H0TcBQzV1KuYyZEsXKySsz5FHRSemm18AIAw8nNjE1AQbRPHAnYWc3rX9MFPuJjDygxKGWfkIBt6zVHZXfMXQkPKmu38Ah8ZZ5D7-SHPgWz_eDjUbqMhgxeG9RdxyYddTPwZzt2EkaFtBvYPLTnsGy2WWowPfzFo-JAXWDu2EKRh3tmA0EetQlv8nqW7xP6sG7Ym1gJsqigTCIxnNQ3NgvTrxib5LT9eqqPez5rOAGZ0_5k395RWqWPbAPE6hD3AFfFxaXPVmz9Wv3EBnYgHKzYamiJ277EYa-mj93i0E0aFg6ITEtqV9lbirJMddjJFWAgk_WPv6jPglZp8yJiGilaTQPF2CNBqSdKxPKIArsEadXzAlL0LMcRK4ewPQQlDINOtUmQoW1fxyOVaSpc7jJ0dSytqOVuumBU4UDMc4LYPo9z_t50hm3CTkXUlyTdhNgcGRRlzl4teGr1DgWPBXXFurNO791F_V4S38wDmUGBlSU1BBgBIV205wctoXTVwi56TAWoixTIfCt0xWG8ncOONigz5teJyHqgjO4BEAwEeuDj2IjjDlSLkzc2120FUrgUQIYlCHuv9w; Hm_lpvt_3a27674636bd41905f818ad38a581b99=1729061427",
+    Referer: "https://aipo.myiqdii.com/broker/index",
+    "Referrer-Policy": "strict-origin-when-cross-origin",
+  },
+};
