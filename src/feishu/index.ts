@@ -9,7 +9,7 @@ const argv = yargs(hideBin(process.argv))
     demandOption: false,
   })
   .option("all", {
-    type: "boolean",
+    type: "string",
     describe: "Fetch all work items",
     default: false,
   }).argv;
@@ -20,7 +20,7 @@ const argv = yargs(hideBin(process.argv))
     console.warn("--> error! use args: --ids=1,2,3 or --all true");
     return;
   }
-  if (resolvedArgv.all) {
+  if (resolvedArgv.all == "true") {
     console.log("--> start fetching all work items!");
     await main();
   } else {
