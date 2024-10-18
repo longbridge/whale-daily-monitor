@@ -58,8 +58,8 @@ export class FeiShuProject {
       });
       const rawToken = res.data.data.token;
       return rawToken;
-    } catch (e) {
-      console.error("fetch plugin token error", JSON.stringify(e));
+    } catch (e: any) {
+      console.error("fetch plugin token error", e.message);
     }
   }
 
