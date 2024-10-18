@@ -16,6 +16,7 @@ const argv = yargs(hideBin(process.argv))
 
 (async () => {
   const resolvedArgv = await argv;
+  console.log("--> resolvedArgv!!!:", process.env.TEMPLATE_ID);
   if (!resolvedArgv.all && !resolvedArgv.ids) {
     console.warn("--> error! use args: --ids=1,2,3 or --all true");
     return;
