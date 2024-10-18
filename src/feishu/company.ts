@@ -4,6 +4,7 @@ import * as path from "path";
 import { FeiShuProject, type createWorkItemPayload } from "./feishu";
 import type { SFCTableRowItem } from "../supabase/types";
 import dayjs from "dayjs";
+import _ from "lodash";
 
 const supabaseUrl = "https://ermcuynsclygxikpdhgh.supabase.co";
 const supabaseKey = process.env.SUPABASE_KEY || "";
@@ -24,7 +25,7 @@ async function fetchSFCCompanies(offset: number, limit: number) {
     .range(offset, offset + limit - 1);
 
   if (error) {
-    console.error("Error fetching SFC companies:", error);
+    console.error("--> Error fetching SFC companies:", error);
     return [];
   }
   return data || [];
@@ -56,8 +57,8 @@ function logErrorsToCSV(errors: any[]) {
   );
 
   const csvContent =
-    "ID,请求的 URL,错误原因\n" +
-    errors.map((err) => `${err.id},"${err.url}","${err.error}"`).join("\n");
+    "ID,错误原因\n" +
+    errors.map((err) => `${err.id},"${err.error}"`).join("\n");
   fs.writeFileSync(filename, csvContent);
 }
 
@@ -118,52 +119,56 @@ export async function main() {
   const feishuProject = new FeiShuProject(token);
 
   let offset = 0;
-  let totalItemsFetched = 0;
+  let pageSize = 2;
 
   while (true) {
-    const companies = await fetchSFCCompanies(offset, 2);
+    const companies = await fetchSFCCompanies(offset, pageSize);
     if (companies.length === 0) break;
-
+    offset += pageSize;
     items.push(...companies);
-    totalItemsFetched += companies.length;
-    offset += 2;
+  }
 
-    for (let i = 0; i < items.length; i += batchSize) {
-      const batch = items.slice(i, i + batchSize);
-      const promises = batch.map((item) => {
-        let workitemPayload = normalizeWorkItemPayload(
-          item,
-          feishuProject.template_id,
-          feishuProject.work_item_type_key
-        );
-        // console.log("-----------", workitemPayload);
-        return feishuProject.createSfcWorkItem(workitemPayload).catch((err) => {
-          const retryPromise = async (retries: number) => {
-            if (retries > 0) {
-              try {
-                await feishuProject.createSfcWorkItem(workitemPayload);
-              } catch (retryErr) {
-                return retryPromise(retries - 1);
-              }
-            }
-            throw new Error(err);
-          };
-          return retryPromise(maxRetries).catch((retryErr) => {
-            errorRecords.push({ id: item.id, error: retryErr.message });
-          });
-        });
-      });
+  console.log(`--> Total items fetched: ${items.length}`);
 
-      Promise.all(promises).then(() => {
-        console.log("--> ");
+  async function doCreateWorkItem(item: SFCTableRowItem) {
+    console.log("--> update item:", item.id);
+
+    let workitemPayload = normalizeWorkItemPayload(
+      item,
+      feishuProject.template_id,
+      feishuProject.work_item_type_key
+    );
+
+    await feishuProject.createSfcWorkItem(workitemPayload).catch((err) => {
+      const retryPromise = async (retries: number) => {
+        if (retries > 0) {
+          try {
+            await feishuProject.createSfcWorkItem(workitemPayload);
+          } catch (retryErr) {
+            return retryPromise(retries - 1);
+          }
+        }
+        throw new Error(err);
+      };
+      return retryPromise(maxRetries).catch((retryErr) => {
+        errorRecords.push({ id: item.id, error: retryErr.message });
       });
+    });
+  }
+
+  async function fetchAllItems() {
+    for (let i = 0; i < items.length; i++) {
+      await doCreateWorkItem(items[i]);
+      if (i < items.length - 1) {
+        await new Promise((resolve) => setTimeout(resolve, 100)); // 等待 100 毫秒
+      }
     }
   }
+
+  await fetchAllItems();
 
   // 记录所有错误到 CSV
   if (errorRecords.length > 0) {
     logErrorsToCSV(errorRecords);
   }
-
-  console.log(`Total items fetched: ${totalItemsFetched}`);
 }

@@ -82,8 +82,8 @@ export class FeiShuProject {
         data,
       };
       return await axios(config);
-    } catch (e) {
-      console.error("--> makeRequest error", e);
+    } catch (e: any) {
+      console.error("--> makeRequest error", e.message);
       return Promise.reject(e);
     }
   }
