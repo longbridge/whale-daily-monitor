@@ -79,7 +79,9 @@ function normalizeWorkItemPayload(
   work_item_type_key: string
 ): createWorkItemPayload {
   // 描述字段用富文档结构处理 https://project.feishu.cn/b/helpcenter/1p8d7djs/1tj6ggll#8b62937b
-  const url = `https://apps.sfc.hk/publicregWeb/corp/${item.id}/details`;
+  const url = `https://apps.sfc.hk/publicregWeb/${
+    item.detail_prefix || "corp"
+  }/${item.id}/details`;
   const description = [
     {
       type: "paragraph",

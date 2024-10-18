@@ -19,4 +19,5 @@ export interface SFCTableRowItem {
   raw: any | null;
   created_at: string;
   updated_at: string | null;
+  detail_prefix: string; // 详情页前缀 ri | corp
 }
