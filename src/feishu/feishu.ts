@@ -1,5 +1,6 @@
 import axios, { type AxiosRequestConfig } from "axios";
 import dayjs from "dayjs";
+import _ from "lodash";
 
 export interface WorkItem {
   name?: string; // 证监会编号 CE_NO
@@ -19,6 +20,7 @@ export interface WorkItem {
   field_33698b?: string; // 投诉电话
   field_0d1d5f?: string; // 其他资料 - 牌照
   field_6f3cb8?: Date; // 发牌日期 - 日期格式
+  [k: string]: any;
 }
 
 export type FieldValuePairItem = {
@@ -83,8 +85,50 @@ export class FeiShuProject {
       };
       return await axios(config);
     } catch (e: any) {
-      console.error("--> makeRequest error", e.message);
+      console.error("--> makeRequest error", e.response?.data);
       return Promise.reject(e);
+    }
+  }
+
+  total_work_items: WorkItem[] = [];
+  current_page_num = 1;
+  page_size = 200;
+  // https://project.feishu.cn/b/helpcenter/1p8d7djs/1attl6vt
+  public async workItemList(): Promise<any> {
+    try {
+      console.log("--> fetch work item list.");
+      // fixed 429 error
+      await new Promise((resolve) => setTimeout(resolve, 200));
+
+      const result = await this.request(
+        "POST",
+        `/open_api/${this.project_key}/work_item/filter`,
+        {
+          work_item_type_keys: [this.work_item_type_key],
+          page_size: this.page_size,
+          page_num: this.current_page_num,
+        }
+      );
+      const {
+        pagination: { total },
+        data = [],
+      } = result.data || { pagination: {} };
+      this.total_work_items.push(...data);
+
+      if (data.length > 0) {
+        this.current_page_num += 1;
+        await this.workItemList();
+      }
+      let ids = this.total_work_items.reduce((acc, item) => {
+        if (item.name) {
+          acc[item.name] = item.id;
+        }
+        return acc;
+      }, {});
+      return ids;
+    } catch (e: any) {
+      console.error("--> fetchAllWorkItems error: ", e.message);
+      return {};
     }
   }
 
@@ -98,7 +142,7 @@ export class FeiShuProject {
   public async updateSfcWorkItem(
     work_item_id: string,
     work_item_type_key: string,
-    update_fields: WorkItem[]
+    update_fields: FieldValuePairItem[]
   ) {
     return await this.request(
       "PUT",

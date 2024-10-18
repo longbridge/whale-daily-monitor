@@ -11,7 +11,6 @@ const supabaseKey = process.env.SUPABASE_KEY || "";
 const supabase = createClient(supabaseUrl, supabaseKey);
 
 const items: SFCTableRowItem[] = [];
-const batchSize = 10;
 const maxRetries = 3;
 
 // 用于记录错误的数组
@@ -24,6 +23,19 @@ async function fetchSFCCompanies(offset: number, limit: number) {
     .select("*")
     .range(offset, offset + limit - 1);
 
+  if (error) {
+    console.error("--> Error fetching SFC companies:", error);
+    return [];
+  }
+  return data || [];
+}
+
+// 获取对应 ids 的 SFC Companies 数据
+async function fetchSFCCompaniesByIds(ids: string[]) {
+  const { data, error } = await supabase
+    .from("sfc_companies")
+    .select("*")
+    .in("id", ids);
   if (error) {
     console.error("--> Error fetching SFC companies:", error);
     return [];
@@ -111,27 +123,20 @@ function normalizeWorkItemPayload(
     ],
   };
 }
+
 // 主程序
-export async function main() {
+export async function main(ids: string[] = []) {
   // create feishu project instance
   const token = await FeiShuProject.fetchPluginToken();
 
   const feishuProject = new FeiShuProject(token);
 
-  let offset = 0;
-  let pageSize = 2;
-
-  while (true) {
-    const companies = await fetchSFCCompanies(offset, pageSize);
-    if (companies.length === 0) break;
-    offset += pageSize;
-    items.push(...companies);
-  }
-
-  console.log(`--> Total items fetched: ${items.length}`);
+  // 获取所有工作项 id 信息
+  const workItemIds = await feishuProject.workItemList();
+  console.log("--> total fetch work items:", Object.keys(workItemIds).length);
 
   async function doCreateWorkItem(item: SFCTableRowItem) {
-    console.log("--> update item:", item.id);
+    console.log("--> create item:", item.id);
 
     let workitemPayload = normalizeWorkItemPayload(
       item,
@@ -151,21 +156,91 @@ export async function main() {
         throw new Error(err);
       };
       return retryPromise(maxRetries).catch((retryErr) => {
+        console.error(
+          `[ERROR] ${item.id} create item error: ${retryErr.message}`
+        );
         errorRecords.push({ id: item.id, error: retryErr.message });
       });
     });
   }
 
-  async function fetchAllItems() {
+  async function doUpdateWorkItem(item: SFCTableRowItem, workItemId: string) {
+    console.log("--> update item:", item.id);
+
+    let workitemPayload = normalizeWorkItemPayload(
+      item,
+      feishuProject.template_id,
+      feishuProject.work_item_type_key
+    );
+
+    await feishuProject
+      .updateSfcWorkItem(
+        workItemId,
+        feishuProject.work_item_type_key,
+        workitemPayload.field_value_pairs
+      )
+      .catch((err) => {
+        const retryPromise = async (retries: number) => {
+          if (retries > 0) {
+            try {
+              await feishuProject.updateSfcWorkItem(
+                item.id,
+                feishuProject.work_item_type_key,
+                workitemPayload.field_value_pairs
+              );
+            } catch (retryErr) {
+              return retryPromise(retries - 1);
+            }
+          }
+          throw new Error(err);
+        };
+        return retryPromise(maxRetries).catch((retryErr) => {
+          console.error(
+            `[ERROR] ${item.id} update item error: ${retryErr.message}`
+          );
+          errorRecords.push({ id: item.id, error: retryErr.message });
+        });
+      });
+  }
+
+  async function doItems(items: SFCTableRowItem[]) {
     for (let i = 0; i < items.length; i++) {
-      await doCreateWorkItem(items[i]);
+      const item = items[i];
+      let workItemId = workItemIds[item.id];
+      if (workItemId) {
+        await doUpdateWorkItem(item, workItemId);
+      } else {
+        await doCreateWorkItem(item);
+      }
       if (i < items.length - 1) {
         await new Promise((resolve) => setTimeout(resolve, 100)); // 等待 100 毫秒
       }
     }
   }
 
-  await fetchAllItems();
+  if (ids.length > 0) {
+    const companies = await fetchSFCCompaniesByIds(ids);
+    items.push(...companies);
+
+    const filteredItems = items.filter((item) => ids.includes(item.id));
+
+    console.log(`--> Matched work items: ${filteredItems.length}`);
+    await doItems(filteredItems);
+  } else {
+    // fetch all companies
+    let offset = 0;
+    let pageSize = 2;
+
+    while (true) {
+      const companies = await fetchSFCCompanies(offset, pageSize);
+      if (companies.length === 0) break;
+      offset += pageSize;
+      items.push(...companies);
+    }
+
+    console.log(`--> Total work items: ${items.length}`);
+    await doItems(items);
+  }
 
   // 记录所有错误到 CSV
   if (errorRecords.length > 0) {
