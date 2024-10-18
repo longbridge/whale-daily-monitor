@@ -19,7 +19,7 @@ jobs:
           fetch-depth: 1
           branch: main
 
-      - name: Prepare env values
+      - uses: oven-sh/setup-bun@v1
         env:
           SUPABASE_KEY: ${{ secrets.SUPABASE_KEY }}
           PLUGIN_SECRET: ${{ secrets.PLUGIN_SECRET }}
@@ -28,7 +28,6 @@ jobs:
           TEMPLATE_ID: ${{ secrets.TEMPLATE_ID }}
           PROJECT_KEY: ${{ secrets.PROJECT_KEY }}
           PLUGIN_ID: ${{ secrets.PLUGIN_ID }}
-        uses: oven-sh/setup-bun@v1
 
       - name: Run update SFC Companies work items
         run: |
