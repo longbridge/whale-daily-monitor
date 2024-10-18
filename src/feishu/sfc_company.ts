@@ -5,7 +5,7 @@ import { FeiShuProject, type createWorkItemPayload } from "./feishu";
 import type { SFCTableRowItem } from "../supabase/types";
 import dayjs from "dayjs";
 import _ from "lodash";
-
+console.log("--1> resolvedArgv!!!:", process.env.TEMPLATE_ID);
 const supabaseUrl = "https://ermcuynsclygxikpdhgh.supabase.co";
 const supabaseKey = process.env.SUPABASE_KEY || "";
 const supabase = createClient(supabaseUrl, supabaseKey);
