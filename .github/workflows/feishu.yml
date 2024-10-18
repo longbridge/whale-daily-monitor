@@ -20,6 +20,8 @@ jobs:
           branch: main
 
       - uses: oven-sh/setup-bun@v1
+
+      - name: Run update SFC Companies work items
         env:
           SUPABASE_KEY: ${{ secrets.SUPABASE_KEY }}
           PLUGIN_SECRET: ${{ secrets.PLUGIN_SECRET }}
@@ -28,8 +30,6 @@ jobs:
           TEMPLATE_ID: ${{ secrets.TEMPLATE_ID }}
           PROJECT_KEY: ${{ secrets.PROJECT_KEY }}
           PLUGIN_ID: ${{ secrets.PLUGIN_ID }}
-
-      - name: Run update SFC Companies work items
         run: |
           bun install
           bun run src/feishu/index.ts --ids=${{ inputs.ids }} --all=${{ inputs.all }}
