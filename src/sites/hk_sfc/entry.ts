@@ -1,6 +1,7 @@
 import { insert, upsert } from "../../supabase/connect";
 import { processInBatches } from "./fetch_detail";
 import { insertDataToExcel } from "./feishu_excel";
+import { main as feishuMain } from "../../feishu/sfc_company";
 import {
   getList,
   getPreviousListCount,
@@ -34,11 +35,11 @@ export class HK_SFC {
       // 前后两次数量不一致就记录
       const diff_list = await getDiffList(this.data_list);
       if (diff_list.length > 0) {
-        this.insert_meta(diff_list);
-        this.insert_history(diff_list);
+        await this.insert_meta(diff_list);
+        await this.insert_history(diff_list);
 
         // 增量更新
-        this.get_full_detail_from_file(diff_list);
+        await this.get_full_detail_from_file(diff_list);
       }
     }
   }
@@ -71,10 +72,14 @@ export class HK_SFC {
     this.insertDataToExcel(feishu_rows);
 
     if (incremental) {
-      this.insert_incremental_detail(supabase_rows);
+      await this.insert_incremental_detail(supabase_rows);
     } else {
-      this.insert_full_detail(supabase_rows);
+      await this.insert_full_detail(supabase_rows);
     }
+
+    // 通知同步飞书
+    const ids = data_list.map((item) => item.ceref);
+    if (ids.length > 0) await feishuMain(ids);
   }
 
   public async update_by_partial(partial_ids: string) {
