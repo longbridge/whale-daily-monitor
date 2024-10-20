@@ -26,6 +26,8 @@ jobs:
           TEMPLATE_ID: ${{ secrets.TEMPLATE_ID }}
           PROJECT_KEY: ${{ secrets.PROJECT_KEY }}
           PLUGIN_ID: ${{ secrets.PLUGIN_ID }}
+          SUPABASE_PASSWORD: ${{ secrets.SUPABASE_PASSWORD }}
+          SUPABASE_EMAIL: ${{ secrets.SUPABASE_EMAIL }}
         run: |
           bun install
           bun run src/feishu/scheduled.ts
