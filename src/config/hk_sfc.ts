@@ -1,5 +1,8 @@
 export default {
   api: "https://apps.sfc.hk/publicregWeb/searchByRaJson?_dc:172907191111",
+  api_by_name:
+    "https://apps.sfc.hk/publicregWeb/searchByNameJson?_dc=1729406959702",
+  batch: 20,
   data: {
     licstatus: "active",
     roleType: "corporation",
@@ -7,7 +10,7 @@ export default {
     nameStartLetter: "C",
     page: 1,
     start: 0,
-    limit: 200,
+    limit: 500,
   },
   headers: {
     accept: "*/*",
