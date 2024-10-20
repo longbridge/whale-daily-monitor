@@ -340,6 +340,8 @@ export const compare_supabase_data = async (data_list: any[]) => {
       if (!isEqual(new_row, old_row)) {
         diff_list.push(item);
       }
+    } else {
+      diff_list.push(item);
     }
   }
 

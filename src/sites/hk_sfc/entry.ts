@@ -79,7 +79,7 @@ export class HK_SFC {
       const diff_list = await compare_supabase_data(supabase_rows);
       if (diff_list.length > 0) {
         await this.insert_incremental_detail(diff_list);
-        await this.insert_meta(diff_list);
+        // await this.insert_meta(diff_list);
         await this.insert_history(diff_list);
       }
     } else {
@@ -135,7 +135,7 @@ export class HK_SFC {
         {
           created_at: new Date(),
           total_count: data_list.length,
-          ids: data_list.map((item: any) => item.ceref).join(","),
+          ids: data_list.map((item: any) => item.ceref || item.id).join(","),
         },
       ],
       "sfc_company_meta"
@@ -148,7 +148,7 @@ export class HK_SFC {
         {
           created_at: new Date(),
           sync: 0,
-          ids: diff_list.map((item: any) => item.ceref).join(","),
+          ids: diff_list.map((item: any) => item.ceref || item.id).join(","),
         },
       ],
       "sfc_company_histories"
