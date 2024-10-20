@@ -1,17 +1,12 @@
 name: Update SFC Companies Work Items
 on:
-  workflow_dispatch:
-    inputs:
-      ids:
-        description: "update work items with ids split by comma, e.g. 1,2,3"
-        required: false
-      all:
-        description: "update all work items"
-        required: false
+  schedule:
+    # Every 1 days at 00:00
+    - cron: "0 0 */1 * *"
 
 jobs:
   export:
-    name: Start update SFC Companies work items
+    name: Check and update SFC Companies work items
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -21,7 +16,7 @@ jobs:
 
       - uses: oven-sh/setup-bun@v1
 
-      - name: Run update SFC Companies work items
+      - name: Check if has new sfc entry and update!
         env:
           SUPABASE_KEY: ${{ secrets.SUPABASE_KEY }}
           PLUGIN_SECRET: ${{ secrets.PLUGIN_SECRET }}
@@ -32,4 +27,4 @@ jobs:
           PLUGIN_ID: ${{ secrets.PLUGIN_ID }}
         run: |
           bun install
-          bun run src/feishu/index.ts --ids=${{ inputs.ids }} --all=${{ inputs.all }}
+          bun run src/supabase/scheduled.ts

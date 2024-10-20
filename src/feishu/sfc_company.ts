@@ -132,6 +132,10 @@ export async function main(ids: string[] = []) {
 
   const feishuProject = new FeiShuProject(token);
 
+  if (ids.length > 0) {
+    console.log(`--> syncing ids`, ids);
+  }
+
   // 获取所有工作项 id 信息
   const workItemIds = await feishuProject.workItemList();
   console.log("--> total fetch work items:", Object.keys(workItemIds).length);

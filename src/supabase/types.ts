@@ -21,3 +21,10 @@ export interface SFCTableRowItem {
   updated_at: string | null;
   detail_prefix: string; // 详情页前缀 ri | corp
 }
+
+export interface SFCCompanyHistoryTableRowItem {
+  id: number; // 变动的 id
+  ids: string; // 变动的 id
+  created_at: string;
+  sync: boolean; // 是否同步
+}
