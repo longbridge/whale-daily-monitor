@@ -1,3 +1,4 @@
+
 # whale-daily-monitor
 
 To install dependencies:

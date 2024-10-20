@@ -1,4 +1,4 @@
-name: Update SFC Companies Work Items
+name: Manual Update Feishu SFC Companies Work Items
 on:
   workflow_dispatch:
     inputs:
