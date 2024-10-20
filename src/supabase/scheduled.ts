@@ -1,18 +1,14 @@
-import { createClient } from "@supabase/supabase-js";
 import { main as feishuMain, main } from "../feishu/sfc_company";
 import type { SFCCompanyHistoryTableRowItem } from "./types";
-
-const supabaseUrl = "https://ermcuynsclygxikpdhgh.supabase.co";
-const supabaseKey = process.env.SUPABASE_KEY || "";
-const supabase = createClient(supabaseUrl, supabaseKey);
+import { client } from "./connect";
 
 async function getDiffIds(): Promise<[string[], string[]]> {
-  const { data, error } = await supabase
+  const { data, error } = await client()
     .from("sfc_company_histories")
     .select("*")
     .eq("sync", 0)
     .order("created_at", { ascending: true });
-  console.log("--> fetching diff ids", data, error);
+  console.log("--> fetching diff ids", data?.length);
 
   if (error) {
     console.error("Error fetching previous count:", error);
@@ -34,7 +30,7 @@ async function scheduled() {
       await feishuMain(ids2);
 
       console.log("--> update sync status for ids", ids);
-      await supabase
+      await client()
         .from("sfc_company_histories")
         .update({ sync: 1 })
         .in("id", ids);

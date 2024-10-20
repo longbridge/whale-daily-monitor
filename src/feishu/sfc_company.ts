@@ -5,9 +5,7 @@ import { FeiShuProject, type createWorkItemPayload } from "./feishu";
 import type { SFCTableRowItem } from "../supabase/types";
 import dayjs from "dayjs";
 import _ from "lodash";
-const supabaseUrl = "https://ermcuynsclygxikpdhgh.supabase.co";
-const supabaseKey = process.env.SUPABASE_KEY || "";
-const supabase = createClient(supabaseUrl, supabaseKey);
+import { client } from "../supabase/connect";
 
 const items: SFCTableRowItem[] = [];
 const maxRetries = 3;
@@ -17,7 +15,7 @@ const errorRecords: { id: string; error: string }[] = [];
 
 // 获取 SFC Companies 数据
 async function fetchSFCCompanies(offset: number, limit: number) {
-  const { data, error } = await supabase
+  const { data, error } = await client()
     .from("sfc_companies")
     .select("*")
     .range(offset, offset + limit - 1);
@@ -31,7 +29,7 @@ async function fetchSFCCompanies(offset: number, limit: number) {
 
 // 获取对应 ids 的 SFC Companies 数据
 async function fetchSFCCompaniesByIds(ids: string[]) {
-  const { data, error } = await supabase
+  const { data, error } = await client()
     .from("sfc_companies")
     .select("*")
     .in("id", ids);
