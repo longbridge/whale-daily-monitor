@@ -8,6 +8,9 @@ on:
       all:
         description: "update all work items"
         required: false
+  repository_dispatch:
+    types:
+      - create_sfc_company
 
 jobs:
   export:
@@ -32,4 +35,8 @@ jobs:
           PLUGIN_ID: ${{ secrets.PLUGIN_ID }}
         run: |
           bun install
-          bun run src/feishu/index.ts --ids=${{ inputs.ids }} --all=${{ inputs.all }}
+          if [ -n "${{ github.event.client_payload.ids }}" ]; then
+            bun run src/feishu/index.ts --ids=${{ github.event.client_payload.ids }} --all=${{ inputs.all }}
+          else
+            bun run src/feishu/index.ts --ids=${{ inputs.ids }} --all=${{ inputs.all }}
+          fi
