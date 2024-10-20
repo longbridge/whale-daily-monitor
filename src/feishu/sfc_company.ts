@@ -15,7 +15,7 @@ const errorRecords: { id: string; error: string }[] = [];
 
 // 获取 SFC Companies 数据
 async function fetchSFCCompanies(offset: number, limit: number) {
-  const { data, error } = await client()
+  const { data, error } = await supabase
     .from("sfc_companies")
     .select("*")
     .range(offset, offset + limit - 1);
@@ -29,7 +29,7 @@ async function fetchSFCCompanies(offset: number, limit: number) {
 
 // 获取对应 ids 的 SFC Companies 数据
 async function fetchSFCCompaniesByIds(ids: string[]) {
-  const { data, error } = await client()
+  const { data, error } = await supabase
     .from("sfc_companies")
     .select("*")
     .in("id", ids);

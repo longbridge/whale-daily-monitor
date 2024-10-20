@@ -1,9 +1,11 @@
-import { main as feishuMain, main } from "../feishu/sfc_company";
-import type { SFCCompanyHistoryTableRowItem } from "./types";
-import { client } from "./connect";
+import { main as feishuMain, main } from "./sfc_company";
+import type { SFCCompanyHistoryTableRowItem } from "../supabase/types";
+import { loginUser, supabase } from "../supabase/connect";
 
 async function getDiffIds(): Promise<[string[], string[]]> {
-  const { data, error } = await client()
+  await loginUser();
+
+  const { data, error } = await supabase
     .from("sfc_company_histories")
     .select("*")
     .eq("sync", 0)
@@ -30,7 +32,7 @@ async function scheduled() {
       await feishuMain(ids2);
 
       console.log("--> update sync status for ids", ids);
-      await client()
+      await supabase
         .from("sfc_company_histories")
         .update({ sync: 1 })
         .in("id", ids);
