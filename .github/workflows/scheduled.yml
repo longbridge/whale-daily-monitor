@@ -1,9 +1,8 @@
 name: Scheduled Check and Update SFC Companies Work Items
 on:
-  workflow_dispatch:
   schedule:
-    # Every 1 days at 00:00
-    - cron: "0 0 */1 * *"
+    # Every 1 days at 00:10
+    - cron: "10 0 */1 * *"
 
 jobs:
   export:
