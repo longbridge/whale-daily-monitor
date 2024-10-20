@@ -21,7 +21,7 @@ async function writeFileWithDirs(filePath: string, data: any) {
 export const writeFile = (data: any, filePath = "data") => {
   writeFileWithDirs(filePath, JSON.stringify(data, null, 2))
     .then(() => {
-      console.log("File has been saved!");
+      // console.log("File has been saved!");
     })
     .catch((err) => {
       console.error("Error writing file:", err);
@@ -29,7 +29,6 @@ export const writeFile = (data: any, filePath = "data") => {
 };
 
 export const readJsonFile = async (filePath: string, default_info = {}) => {
-  const fullPath = path.join(__dirname, filePath);
   let json = default_info;
 
   try {

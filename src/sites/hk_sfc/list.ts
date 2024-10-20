@@ -294,14 +294,14 @@ function filter_u0000(str: string) {
   return str ? str.replace(/\u0000/g, "") : "";
 }
 
-export const get_partial_list = async (partial: PARTIAL[]) => {
+export const get_partial_list = async (partial_ids: string) => {
   let data_list: any[] = [];
-  for (const item of partial) {
+  for (const item of partial_ids.split(",")) {
     const body = getBody({
       licstatus: "all",
       lictype: "all",
       searchbyoption: "byceref",
-      searchtext: get(item, "ceref"),
+      searchtext: item,
       page: 1,
       start: 0,
       limit: 20,

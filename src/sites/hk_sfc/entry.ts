@@ -11,9 +11,9 @@ import {
 
 export interface PARTIAL {
   ceref: string;
-  isCorp: boolean;
-  isRi: boolean;
-  isEo: boolean;
+  isCorp?: boolean;
+  isRi?: boolean;
+  isEo?: boolean;
 }
 
 export class HK_SFC {
@@ -21,18 +21,25 @@ export class HK_SFC {
 
   public async check_list() {
     // 检查接口列表
+    const start_time = new Date();
     this.data_list = await getList();
+    const end_time = new Date();
+    console.log(
+      "🚀 ~ HK_SFC ~ check_list ~ duration:",
+      end_time.getTime() - start_time.getTime()
+    );
     const previous_total_counts = await getPreviousListCount();
 
     if (previous_total_counts !== this.data_list.length) {
       // 前后两次数量不一致就记录
       const diff_list = await getDiffList(this.data_list);
+      if (diff_list.length > 0) {
+        this.insert_meta(diff_list);
+        this.insert_history(diff_list);
 
-      this.insert_meta(this.data_list);
-      this.insert_history(diff_list);
-
-      // 增量更新
-      this.get_full_detail_from_file(diff_list);
+        // 增量更新
+        this.get_full_detail_from_file(diff_list);
+      }
     }
   }
 
@@ -43,7 +50,15 @@ export class HK_SFC {
    * 生成完后会记录到 backup/hk_sfc/xxx 目录下
    */
   public async get_detail_from_page(data_list: any[], batch_size = 3) {
+    const start_time = new Date();
     await processInBatches(data_list, batch_size);
+    const end_time = new Date();
+    console.log(
+      "🚀 ~ HK_SFC ~ get_detail_from_page ~ duration: ",
+      end_time.getTime() - start_time.getTime(),
+      " list_length:",
+      data_list.length
+    );
   }
 
   public async get_full_detail_from_file(
@@ -62,9 +77,10 @@ export class HK_SFC {
     }
   }
 
-  public async update_by_partial(partial: PARTIAL[]) {
-    const partial_list = await get_partial_list(partial);
-    await processInBatches(partial_list, 3);
+  public async update_by_partial(partial_ids: string) {
+    const partial_list = await get_partial_list(partial_ids);
+
+    await this.get_detail_from_page(partial_list, 3);
 
     await this.get_full_detail_from_file(partial_list, true);
   }

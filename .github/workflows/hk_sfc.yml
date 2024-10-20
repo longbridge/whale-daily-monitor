@@ -1,0 +1,31 @@
+name: Update SFC Companies List And Detail
+on:
+  workflow_dispatch:
+    inputs:
+      ids:
+        description: "update SFC List with ids split by comma, e.g. 1,2,3"
+        required: false
+  repository_dispatch:
+    types:
+      - update_sfc_list
+
+jobs:
+  export:
+    name: Start update SFC Companies list
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+          branch: main
+
+      - uses: oven-sh/setup-bun@v1
+
+      - name: Run update SFC Companies list and detail
+        env:
+          SUPABASE_KEY: ${{ secrets.SUPABASE_KEY }}
+          SUPABASE_PASSWORD: ${{ secrets.SUPABASE_PASSWORD }}
+          SUPABASE_EMAIL: ${{ secrets.SUPABASE_EMAIL }}
+        run: |
+          bun install
+          bun run src/sites/hk_sfc/index.ts --ids=${{ inputs.ids }}
