@@ -31,7 +31,7 @@ async function scheduled() {
     try {
       await feishuMain(ids2);
 
-      console.log("--> update sync status for ids", ids);
+      console.log("--> update sync status for ids", ids2);
       await supabase
         .from("sfc_company_histories")
         .update({ sync: 1 })
