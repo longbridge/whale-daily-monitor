@@ -8,6 +8,7 @@ import {
   getDiffList,
   parse_detail_info,
   get_partial_list,
+  compare_supabase_data,
 } from "./list";
 
 export interface PARTIAL {
@@ -69,17 +70,31 @@ export class HK_SFC {
     // 从 supabase 中获取数据
     const { feishu_rows, supabase_rows } = await parse_detail_info(data_list);
 
-    this.insertDataToExcel(feishu_rows);
+    /**
+     * 对比 supabase 的数据，如果数据有变化，则更新 meta 和 history table
+     */
+    // this.insertDataToExcel(feishu_rows);
 
     if (incremental) {
-      await this.insert_incremental_detail(supabase_rows);
+      const diff_list = await compare_supabase_data(supabase_rows);
+      if (diff_list.length > 0) {
+        await this.insert_incremental_detail(diff_list);
+        await this.insert_meta(diff_list);
+        await this.insert_history(diff_list);
+      }
     } else {
       await this.insert_full_detail(supabase_rows);
     }
 
     // 通知同步飞书
     const ids = data_list.map((item) => item.ceref);
-    if (ids.length > 0) await feishuMain(ids);
+    if (ids.length > 0) {
+      try {
+        await feishuMain(ids);
+      } catch (error) {
+        console.error("--> error syncing feishu", error);
+      }
+    }
   }
 
   public async update_by_partial(partial_ids: string) {

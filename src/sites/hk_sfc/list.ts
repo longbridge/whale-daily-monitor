@@ -1,7 +1,7 @@
-import { get, last } from "lodash-es";
+import { get, isEqual, last } from "lodash-es";
 import { API } from "../../api";
 import config from "../../config/hk_sfc";
-import { select } from "../../supabase/connect";
+import { select, select_by_params } from "../../supabase/connect";
 import { readJsonFile } from "../../fs";
 import dayjs from "dayjs";
 import type { PARTIAL } from "./entry";
@@ -318,4 +318,30 @@ export const get_partial_list = async (partial_ids: string) => {
     }
   }
   return data_list;
+};
+
+export const compare_supabase_data = async (data_list: any[]) => {
+  const diff_list = [];
+  for (const item of data_list) {
+    const supabase_row =
+      (await select_by_params("id", item.id, "*", "sfc_companies")) || [];
+
+    if (supabase_row.length > 0) {
+      const new_row = { ...item };
+      const old_row = supabase_row[0] || {};
+
+      delete new_row.updated_at;
+      delete new_row.created_at;
+      // @ts-ignore
+      delete old_row.updated_at;
+      // @ts-ignore
+      delete old_row.created_at;
+
+      if (!isEqual(new_row, old_row)) {
+        diff_list.push(item);
+      }
+    }
+  }
+
+  return diff_list;
 };
