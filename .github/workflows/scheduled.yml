@@ -1,5 +1,10 @@
 name: Update SFC Companies Work Items
 on:
+  workflow_dispatch:
+    inputs:
+      ids:
+        description: "update work items with ids split by comma, e.g. 1,2,3"
+        required: false
   schedule:
     # Every 1 days at 00:00
     - cron: "0 0 */1 * *"
