@@ -1,11 +1,10 @@
-import { createClient } from "@supabase/supabase-js";
 import * as fs from "fs";
 import * as path from "path";
 import { FeiShuProject, type createWorkItemPayload } from "./feishu";
 import type { SFCTableRowItem } from "../supabase/types";
 import dayjs from "dayjs";
 import _ from "lodash";
-import { client } from "../supabase/connect";
+import { loginUser, supabase } from "../supabase/connect";
 
 const items: SFCTableRowItem[] = [];
 const maxRetries = 3;
@@ -15,6 +14,7 @@ const errorRecords: { id: string; error: string }[] = [];
 
 // 获取 SFC Companies 数据
 async function fetchSFCCompanies(offset: number, limit: number) {
+  await loginUser();
   const { data, error } = await supabase
     .from("sfc_companies")
     .select("*")
@@ -29,6 +29,7 @@ async function fetchSFCCompanies(offset: number, limit: number) {
 
 // 获取对应 ids 的 SFC Companies 数据
 async function fetchSFCCompaniesByIds(ids: string[]) {
+  await loginUser();
   const { data, error } = await supabase
     .from("sfc_companies")
     .select("*")
@@ -40,19 +41,6 @@ async function fetchSFCCompaniesByIds(ids: string[]) {
   return data || [];
 }
 
-// 调用更新方法，并处理错误
-async function updateSFCCompanyWorkItem(item: any) {
-  // 此处是占位实现，请替换为实际的 API 调用
-  // return await yourApiCall(item);
-
-  // 模拟成功或失败的情况
-  if (Math.random() < 0.8) {
-    // 80% 成功
-    return Promise.resolve();
-  } else {
-    return Promise.reject("Simulated error"); // 模拟错误
-  }
-}
 
 // 记录错误到本地 CSV 文件
 function logErrorsToCSV(errors: any[]) {
@@ -66,7 +54,7 @@ function logErrorsToCSV(errors: any[]) {
   );
 
   const csvContent =
-    "ID,错误原因\n" +
+    "ID，错误原因\n" +
     errors.map((err) => `${err.id},"${err.error}"`).join("\n");
   fs.writeFileSync(filename, csvContent);
 }
