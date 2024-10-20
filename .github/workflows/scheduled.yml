@@ -28,4 +28,4 @@ jobs:
           PLUGIN_ID: ${{ secrets.PLUGIN_ID }}
         run: |
           bun install
-          bun run src/supabase/scheduled.ts
+          bun run src/feishu/scheduled.ts
