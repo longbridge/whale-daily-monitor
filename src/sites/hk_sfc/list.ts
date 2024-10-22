@@ -238,11 +238,26 @@ export const parse_detail_info = async (data_list: any[]) => {
         .map((r: any) => get(r, "ceRef", ""))
         .filter(Boolean)
         .join(","), // ro_entityName
-      "其他资料-RO(field_fadd47)": get(ro, "list.0.fullName", ""), // ro
-      "投诉电话(field_33698b)": get(co, "list.0.tel", ""), // co_tel
-      "投诉传真(field_ad8480)": get(co, "list.0.fax", ""), // co_fax
-      "投诉电邮(field_55a3d1)": get(co, "list.0.email", ""), // co_email
-      "投诉通讯地址(field_b1a32b)": get(co, "list.0.address.fullAddress", ""), // co_address
+      "其他资料-RO(field_fadd47)": get(ro, "list", [])
+        .map((r: any) => get(r, "ceRef"))
+        .filter(Boolean)
+        .join(","), // ro
+      "投诉电话(field_33698b)": get(co, "list", [])
+        .map((c: any) => get(c, "tel", ""))
+        .filter(Boolean)
+        .join(","), // co_tel
+      "投诉传真(field_ad8480)": get(co, "list", [])
+        .map((c: any) => get(c, "fax", ""))
+        .filter(Boolean)
+        .join(","), // co_fax
+      "投诉电邮(field_55a3d1)": get(co, "list", [])
+        .map((c: any) => get(c, "email", ""))
+        .filter(Boolean)
+        .join(","), // co_email
+      "投诉通讯地址(field_b1a32b)": get(co, "list", [])
+        .map((c: any) => get(c, "address.fullAddress", ""))
+        .filter(Boolean)
+        .join(","), // co_address
       "拉群方式选择(group_type)": "不拉群",
       "当前状态(work_item_status)": "未开始",
       "当前状态开始时间(status_begin_time)": dayjs().format("YYYY-MM-DD"),
@@ -271,11 +286,36 @@ export const parse_detail_info = async (data_list: any[]) => {
         .map((r: any) => get(r, "ceRef", ""))
         .filter(Boolean)
         .join(","), // ro_entityName
-      field_fadd47: filter_u0000(get(ro, "list.0.fullName", "")), // ro
-      field_33698b: filter_u0000(get(co, "list.0.tel", "")), // co_tel
-      field_ad8480: filter_u0000(get(co, "list.0.fax", "")), // co_fax
-      field_55a3d1: filter_u0000(get(co, "list.0.email", "")), // co_email
-      field_b1a32b: filter_u0000(get(co, "list.0.address.fullAddress", "")), // co_address
+      field_fadd47: filter_u0000(
+        get(ro, "list", [])
+          .map((r: any) => get(r, "ceRef"))
+          .filter(Boolean)
+          .join(",")
+      ), // ro
+      field_33698b: filter_u0000(
+        get(co, "list", [])
+          .map((c: any) => get(c, "tel", ""))
+          .filter(Boolean)
+          .join(",")
+      ), // co_tel
+      field_ad8480: filter_u0000(
+        get(co, "list", [])
+          .map((c: any) => get(c, "fax", ""))
+          .filter(Boolean)
+          .join(",")
+      ), // co_fax
+      field_55a3d1: filter_u0000(
+        get(co, "list", [])
+          .map((c: any) => get(c, "email", ""))
+          .filter(Boolean)
+          .join(",")
+      ), // co_email
+      field_b1a32b: filter_u0000(
+        get(co, "list", [])
+          .map((c: any) => get(c, "address.fullAddress", ""))
+          .filter(Boolean)
+          .join(",")
+      ), // co_address
       updated_at: dayjs().format("YYYY-MM-DD HH:mm:ss"),
       created_at: dayjs().format("YYYY-MM-DD HH:mm:ss"),
       raw: "{}",
