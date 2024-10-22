@@ -150,10 +150,7 @@ export const getPreviousListCount = async () => {
 };
 
 export const getDiffList = async (new_list: any[]) => {
-  const total_counts_from_supabase = await select(
-    "ids",
-    "sfc_company_histories"
-  );
+  const total_counts_from_supabase = await select("ids", "sfc_company_meta");
   const previous_list_ids = get(
     last(total_counts_from_supabase),
     "ids",

@@ -36,7 +36,7 @@ export class HK_SFC {
       // 前后两次数量不一致就记录
       const diff_list = await getDiffList(this.data_list);
       if (diff_list.length > 0) {
-        await this.insert_meta(diff_list);
+        await this.insert_meta(this.data_list);
         await this.insert_history(diff_list);
 
         // 增量更新
@@ -78,8 +78,9 @@ export class HK_SFC {
     if (incremental) {
       const diff_list = await compare_supabase_data(supabase_rows);
       if (diff_list.length > 0) {
+        this.data_list = await getList();
         await this.insert_incremental_detail(diff_list);
-        // await this.insert_meta(diff_list);
+        await this.insert_meta(this.data_list);
         await this.insert_history(diff_list);
       }
     } else {
