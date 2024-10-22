@@ -21,24 +21,30 @@ export interface PARTIAL {
 export class HK_SFC {
   private data_list: any[] = [];
 
-  public async check_list() {
+  public async check_list(force = false) {
     // 检查接口列表
     const start_time = new Date();
     this.data_list = await getList();
     const end_time = new Date();
     console.log(
       "🚀 ~ HK_SFC ~ check_list ~ duration:",
-      end_time.getTime() - start_time.getTime()
+      end_time.getTime() - start_time.getTime(),
+      "latest_list_length=",
+      this.data_list.length
     );
     const previous_total_counts = await getPreviousListCount();
 
-    if (previous_total_counts !== this.data_list.length) {
+    if (previous_total_counts !== this.data_list.length || force) {
       // 前后两次数量不一致就记录
-      const diff_list = await getDiffList(this.data_list);
+      const diff_list = force
+        ? this.data_list
+        : await getDiffList(this.data_list);
+
       if (diff_list.length > 0) {
         await this.insert_meta(this.data_list);
         await this.insert_history(diff_list);
 
+        await this.get_detail_from_page(diff_list, 3);
         // 增量更新
         await this.get_full_detail_from_file(diff_list);
       }

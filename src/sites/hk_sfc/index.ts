@@ -19,12 +19,20 @@ const argv = yargs(hideBin(process.argv))
       }
     },
   })
+  .option("force", {
+    alias: "f",
+    type: "string",
+    describe: "Force update list",
+    default: false,
+  })
   .help().argv;
 // @ts-ignore
 const init_ids = argv.ids || [];
+// @ts-ignore
+const force = argv.force === "true";
 
 if (init_ids.length > 0) {
   hk_sfc.update_by_partial(uniq(init_ids).join(","));
 } else {
-  hk_sfc.check_list();
+  hk_sfc.check_list(force);
 }
