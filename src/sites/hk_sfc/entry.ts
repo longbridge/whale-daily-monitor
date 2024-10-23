@@ -34,6 +34,8 @@ export class HK_SFC {
     );
     const previous_total_counts = await getPreviousListCount();
 
+    // 每次都记录当前请求到的数据情况
+    await this.insert_meta(this.data_list);
     if (previous_total_counts !== this.data_list.length || force) {
       // 前后两次数量不一致就记录
       const diff_list = force
@@ -41,7 +43,6 @@ export class HK_SFC {
         : await getDiffList(this.data_list);
 
       if (diff_list.length > 0) {
-        await this.insert_meta(this.data_list);
         await this.insert_history(diff_list);
 
         await this.get_detail_from_page(diff_list, 3);
