@@ -25,11 +25,6 @@ jobs:
         env:
           SUPABASE_KEY: ${{ secrets.SUPABASE_KEY }}
           PLUGIN_SECRET: ${{ secrets.PLUGIN_SECRET }}
-          USER_KEY: ${{ secrets.USER_KEY }}
-          WORK_ITEM_TYPE_KEY: ${{ secrets.WORK_ITEM_TYPE_KEY }}
-          TEMPLATE_ID: ${{ secrets.TEMPLATE_ID }}
-          PROJECT_KEY: ${{ secrets.PROJECT_KEY }}
-          PLUGIN_ID: ${{ secrets.PLUGIN_ID }}
           SUPABASE_PASSWORD: ${{ secrets.SUPABASE_PASSWORD }}
           SUPABASE_EMAIL: ${{ secrets.SUPABASE_EMAIL }}
         run: |

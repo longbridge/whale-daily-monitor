@@ -46,7 +46,7 @@ export class FeiShuProject {
   // https://project.feishu.cn/b/helpcenter/1p8d7djs/4bsmoql6
   static async fetchPluginToken() {
     const data = {
-      plugin_id: process.env.PLUGIN_ID,
+      plugin_id: "MII_670FDD73F15A0003",
       plugin_secret: process.env.PLUGIN_SECRET,
       type: 0,
     };
@@ -65,11 +65,11 @@ export class FeiShuProject {
 
   constructor(token: string) {
     this.token = token!;
-    this.project_key = process.env.PROJECT_KEY!;
-    this.template_id = process.env.TEMPLATE_ID!;
-    this.work_item_type_key = process.env.WORK_ITEM_TYPE_KEY!;
+    this.project_key = "6706259063b9f34780f1fbe5";
+    this.template_id = "1921387";
+    this.work_item_type_key = "6706259063b9f34780f1fbe5";
     this.host = "https://project.feishu.cn";
-    this.user_key = process.env.USER_KEY!;
+    this.user_key = "7237123857910415361";
   }
 
   async request(method: string, path: string, data: any = {}) {
