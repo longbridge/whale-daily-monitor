@@ -161,7 +161,12 @@ export const getDiffList = async (new_list: any[]) => {
     (item: any) => !previous_list_ids.includes(item.ceref)
   );
 
-  return diff_list;
+  const diff_ids = diff_list.map((item: any) => item.ceref);
+  const not_exist_ids = previous_list_ids.filter(
+    (id: string) => !diff_ids.includes(id)
+  );
+
+  return { diff_list, not_exist_ids };
 };
 
 export const parse_detail_info = async (data_list: any[]) => {

@@ -34,13 +34,22 @@ export class HK_SFC {
     );
     const previous_total_counts = await getPreviousListCount();
 
-    // 每次都记录当前请求到的数据情况
+    const { diff_list: _diff_ids, not_exist_ids } = await getDiffList(
+      this.data_list
+    );
+
+    console.log(
+      "🚀 ~ HK_SFC ~ check_list ~ previous_total_counts:",
+      previous_total_counts,
+      "「not_exist_ids」:",
+      not_exist_ids
+    );
+
+    // // 每次都记录当前请求到的数据情况
     await this.insert_meta(this.data_list);
-    if (previous_total_counts !== this.data_list.length || force) {
+    if (_diff_ids.length > 0 || force) {
       // 前后两次数量不一致就记录
-      const diff_list = force
-        ? this.data_list
-        : await getDiffList(this.data_list);
+      const diff_list = force ? this.data_list : _diff_ids;
 
       if (diff_list.length > 0) {
         await this.insert_history(diff_list);
