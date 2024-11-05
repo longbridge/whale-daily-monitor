@@ -65,7 +65,7 @@ export class FeiShuProject {
 
   constructor(token: string) {
     this.token = token!;
-    this.project_key = "6706259063b9f34780f1fbe5";
+    this.project_key = "650069aeb1232854aca226f4";
     this.template_id = "1921387";
     this.work_item_type_key = "6706259063b9f34780f1fbe5";
     this.host = "https://project.feishu.cn";
