@@ -2,6 +2,7 @@ import { insert, upsert } from "../../supabase/connect";
 import { processInBatches } from "./fetch_detail";
 import { insertDataToExcel } from "./feishu_excel";
 import { main as feishuMain } from "../../feishu/sfc_company";
+import { feishuScheduled } from "../../feishu/scheduled";
 import {
   getList,
   getPreviousListCount,
@@ -41,8 +42,10 @@ export class HK_SFC {
     console.log(
       "🚀 ~ HK_SFC ~ check_list ~ previous_total_counts:",
       previous_total_counts,
-      "「not_exist_ids」:",
-      not_exist_ids
+      // "「not_exist_ids」:",
+      // not_exist_ids,
+      "diff_ids:",
+      _diff_ids
     );
 
     // // 每次都记录当前请求到的数据情况
@@ -107,7 +110,7 @@ export class HK_SFC {
     const ids = data_list.map((item) => item.ceref);
     if (ids.length > 0) {
       try {
-        await feishuMain(ids);
+        await feishuScheduled();
       } catch (error) {
         console.error("--> error syncing feishu", error);
       }

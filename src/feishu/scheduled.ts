@@ -24,7 +24,7 @@ async function getDiffIds(): Promise<[string[], string[]]> {
   ];
 }
 
-async function scheduled() {
+export async function feishuScheduled() {
   // get new ids
   const [ids, ids2] = await getDiffIds();
   if (ids2.length > 0) {
@@ -44,6 +44,6 @@ async function scheduled() {
   }
 }
 
-(async () => {
-  await scheduled();
-})();
+// (async () => {
+//   await scheduled();
+// })();

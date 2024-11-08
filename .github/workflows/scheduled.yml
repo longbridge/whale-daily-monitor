@@ -25,4 +25,4 @@ jobs:
           SUPABASE_EMAIL: ${{ secrets.SUPABASE_EMAIL }}
         run: |
           bun install
-          bun run src/feishu/scheduled.ts
+          bun run hk_sfc
