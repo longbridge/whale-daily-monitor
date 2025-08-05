@@ -11,7 +11,9 @@ export const getDetailInfo = async (item: any) => {
   };
   const path = get(item, "isCorp") ? "corp" : get(item, "isRi") ? "ri" : "eo";
   try {
-    const browser = await puppeteer.launch();
+    const browser = await puppeteer.launch({
+      args: ["--no-sandbox", "--disable-setuid-sandbox"],
+    });
     await Promise.all([
       goDetail(browser, path, ceref),
       goAddress(browser, path, ceref),
