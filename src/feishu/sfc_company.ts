@@ -213,10 +213,12 @@ export async function main(ids: string[] = []) {
 
   async function postToSlack(item: SFCTableRowItem) {
     const slackWebhookUrl = process.env.SLACK_WEBHOOK_URL;
+    console.log("--> postToSlack");
     if (!slackWebhookUrl) {
       console.error("--> SLACK_WEBHOOK_URL is not set");
       return;
     }
+    console.log("--> postToSlack Start");
 
     let data = {
       id: item.id,
