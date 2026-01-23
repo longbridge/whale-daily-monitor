@@ -24,6 +24,7 @@ jobs:
       - name: Run update SFC Companies work items
         env:
           SUPABASE_KEY: ${{ secrets.SUPABASE_KEY }}
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
           PLUGIN_SECRET: ${{ secrets.PLUGIN_SECRET }}
           SUPABASE_PASSWORD: ${{ secrets.SUPABASE_PASSWORD }}
           SUPABASE_EMAIL: ${{ secrets.SUPABASE_EMAIL }}
