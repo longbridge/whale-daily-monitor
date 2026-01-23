@@ -1,5 +1,6 @@
 import * as fs from "fs";
 import * as path from "path";
+import axios, { type AxiosRequestConfig } from "axios";
 import { FeiShuProject, type createWorkItemPayload } from "./feishu";
 import type { SFCTableRowItem } from "../supabase/types";
 import dayjs from "dayjs";
@@ -41,7 +42,6 @@ async function fetchSFCCompaniesByIds(ids: string[]) {
   return data || [];
 }
 
-
 // 记录错误到本地 CSV 文件
 function logErrorsToCSV(errors: any[]) {
   const timestamp = new Date()
@@ -50,7 +50,7 @@ function logErrorsToCSV(errors: any[]) {
     .replace(/\//g, "");
   const filename = path.join(
     __dirname,
-    `${timestamp}_update_feishu_work_item_error.log`
+    `${timestamp}_update_feishu_work_item_error.log`,
   );
 
   const csvContent =
@@ -62,7 +62,7 @@ function logErrorsToCSV(errors: any[]) {
 function normalizeWorkItemPayload(
   item: SFCTableRowItem,
   template_id: string,
-  work_item_type_key: string
+  work_item_type_key: string,
 ): createWorkItemPayload {
   // 描述字段用富文档结构处理 https://project.feishu.cn/b/helpcenter/1p8d7djs/1tj6ggll#8b62937b
   const url = `https://apps.sfc.hk/publicregWeb/${
@@ -132,7 +132,7 @@ export async function main(ids: string[] = []) {
     let workitemPayload = normalizeWorkItemPayload(
       item,
       feishuProject.template_id,
-      feishuProject.work_item_type_key
+      feishuProject.work_item_type_key,
     );
 
     await feishuProject.createSfcWorkItem(workitemPayload).catch((err) => {
@@ -148,7 +148,7 @@ export async function main(ids: string[] = []) {
       };
       return retryPromise(maxRetries).catch((retryErr) => {
         console.error(
-          `[ERROR] ${item.id} create item error: ${retryErr.message}`
+          `[ERROR] ${item.id} create item error: ${retryErr.message}`,
         );
         errorRecords.push({ id: item.id, error: retryErr.message });
       });
@@ -161,14 +161,14 @@ export async function main(ids: string[] = []) {
     let workitemPayload = normalizeWorkItemPayload(
       item,
       feishuProject.template_id,
-      feishuProject.work_item_type_key
+      feishuProject.work_item_type_key,
     );
 
     await feishuProject
       .updateSfcWorkItem(
         workItemId,
         feishuProject.work_item_type_key,
-        workitemPayload.field_value_pairs
+        workitemPayload.field_value_pairs,
       )
       .catch((err) => {
         const retryPromise = async (retries: number) => {
@@ -177,7 +177,7 @@ export async function main(ids: string[] = []) {
               await feishuProject.updateSfcWorkItem(
                 item.id,
                 feishuProject.work_item_type_key,
-                workitemPayload.field_value_pairs
+                workitemPayload.field_value_pairs,
               );
             } catch (retryErr) {
               return retryPromise(retries - 1);
@@ -187,7 +187,7 @@ export async function main(ids: string[] = []) {
         };
         return retryPromise(maxRetries).catch((retryErr) => {
           console.error(
-            `[ERROR] ${item.id} update item error: ${retryErr.message}`
+            `[ERROR] ${item.id} update item error: ${retryErr.message}`,
           );
           errorRecords.push({ id: item.id, error: retryErr.message });
         });
@@ -206,6 +206,47 @@ export async function main(ids: string[] = []) {
       if (i < items.length - 1) {
         await new Promise((resolve) => setTimeout(resolve, 100)); // 等待 100 毫秒
       }
+      // post to slack
+      await postToSlack(item);
+    }
+  }
+
+  async function postToSlack(item: SFCTableRowItem) {
+    const slackWebhookUrl = process.env.SLACK_WEBHOOK_URL;
+    if (!slackWebhookUrl) {
+      console.error("--> SLACK_WEBHOOK_URL is not set");
+      return;
+    }
+
+    let data = {
+      id: item.id,
+      description: item.description,
+      field_90318a: item.field_90318a,
+      field_0600cb: item.field_0600cb,
+      field_6e31d4: item.field_6e31d4,
+      field_6a0e6c: item.field_6a0e6c,
+      field_55a3d1: item.field_55a3d1,
+      field_b61b6c: item.field_b61b6c,
+      field_b1a32b: item.field_b1a32b,
+      field_fadd47: item.field_fadd47,
+      field_ad8480: item.field_ad8480,
+      field_a3d34f: item.field_a3d34f,
+      field_a1e60f: item.field_a1e60f,
+      field_546605: item.field_546605,
+      field_33698b: item.field_33698b,
+      field_0d1d5f: item.field_0d1d5f,
+      field_6f3cb8: item.field_6f3cb8,
+    };
+
+    try {
+      const res = await axios({
+        method: "POST",
+        url: slackWebhookUrl,
+        data,
+      });
+      console.log("--> slack message sent successfully");
+    } catch (e: any) {
+      console.error("--> slack message send error", e.message);
     }
   }
 
