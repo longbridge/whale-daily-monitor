@@ -1,0 +1,25 @@
+name: Supabase Keep Alive
+on:
+  workflow_dispatch:
+  schedule:
+    # Every 6 hours. Supabase free projects pause without enough database
+    # activity over a week; the twice-weekly scheduled job alone is not enough.
+    - cron: "23 */6 * * *"
+
+jobs:
+  ping:
+    name: Run a real database query
+    runs-on: ubuntu-latest
+    steps:
+      - name: Query sfc_companies
+        env:
+          SUPABASE_URL: https://ermcuynsclygxikpdhgh.supabase.co
+          SUPABASE_KEY: ${{ secrets.SUPABASE_KEY }}
+        run: |
+          for i in 1 2 3; do
+            curl --fail-with-body -sS -m 30 \
+              "$SUPABASE_URL/rest/v1/sfc_companies?select=id&limit=1" \
+              -H "apikey: $SUPABASE_KEY" \
+              -H "Authorization: Bearer $SUPABASE_KEY" > /dev/null
+            sleep 5
+          done
